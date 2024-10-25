@@ -1,0 +1,210 @@
+<!doctype html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Inicio de Sesión y Registro</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
+</head>
+
+<body class="bg-gray-100">
+  <header class="py-4 text-white bg-blue-500">
+    <div class="flex justify-between items-center mx-auto max-w-md">
+      <h1 class="text-xl font-bold">Mi Aplicación</h1>
+      <nav>
+        <ul class="flex space-x-4">
+          <li><a href="#" class="hover:underline">Inicio</a></li>
+          <li><a href="#" class="hover:underline">Sobre Nosotros</a></li>
+          <li><a href="#" class="hover:underline">Contacto</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main class="p-6 mx-auto mt-10 max-w-md bg-white rounded-lg shadow-md">
+    <div class="mb-4">
+      <button id="loginTab" class="py-2 w-1/2 text-white bg-blue-500 rounded-l transition hover:bg-blue-600">
+        Iniciar Sesión
+      </button>
+      <button id="registerTab" class="py-2 w-1/2 text-gray-700 bg-gray-300 rounded-r transition hover:bg-gray-400">
+        Registrarme
+      </button>
+    </div>
+
+    <div id="loginForm" class="transition-opacity duration-500 ease-in-out">
+      <form id="login" action="#" method="POST">
+        <label for="user" class="block mb-2">Usuario</label>
+        <input type="text" id="user" name="user" required class="p-2 mb-4 w-full rounded border border-gray-300" />
+
+        <label for="pass" class="block mb-2">Contraseña</label>
+        <input type="password" id="pass" name="pass" required class="p-2 mb-4 w-full rounded border border-gray-300" />
+
+        <button type="submit" class="p-2 w-full text-white bg-blue-500 rounded hover:bg-blue-600">
+          Iniciar
+        </button>
+        <a href="#" class="inline-block mt-2 text-blue-500 hover:underline">¿Olvidaste tu contraseña?</a>
+      </form>
+    </div>
+
+    <div id="registerForm" class="hidden opacity-0 transition-opacity duration-500 ease-in-out">
+      <form id="register" action="#" method="POST">
+        <label for="reg_user" class="block mb-2">Usuario</label>
+        <input type="text" id="reg_user" name="reg_user" required
+          class="p-2 mb-4 w-full rounded border border-gray-300" />
+
+        <label for="correo" class="block mb-2">Correo</label>
+        <input type="email" id="correo" name="correo" required class="p-2 mb-4 w-full rounded border border-gray-300" />
+
+        <label for="reg_pass" class="block mb-2">Contraseña</label>
+        <input type="password" id="reg_pass" name="reg_pass" required
+          class="p-2 mb-4 w-full rounded border border-gray-300" />
+
+        <button type="submit" class="p-2 w-full text-white bg-blue-500 rounded hover:bg-blue-600">
+          Registrarme
+        </button>
+        <a href="#" id="backToLogin" class="inline-block mt-2 text-blue-500 hover:underline">Ya tengo una cuenta</a>
+      </form>
+    </div>
+
+    <div id="userList" class="hidden mt-6">
+      <h2 class="text-lg font-bold">Usuarios Registrados</h2>
+      <ul id="registeredUsers" class="pl-5 list-disc"></ul>
+    </div>
+
+    <button id="logout" class="hidden p-2 mt-4 text-white bg-red-500 rounded hover:bg-red-600">
+      Salir
+    </button>
+  </main>
+
+  <footer class="py-4 mt-10 text-white bg-gray-800">
+    <div class="flex justify-between mx-auto max-w-md">
+      <nav>
+        <ul class="flex space-x-4">
+          <li><a href="#" class="hover:underline">Inicio</a></li>
+          <li><a href="#" class="hover:underline">Sobre Nosotros</a></li>
+          <li><a href="#" class="hover:underline">Contacto</a></li>
+        </ul>
+      </nav>
+      <p>&copy; 2024 Todos los derechos reservados.</p>
+    </div>
+  </footer>
+
+  <script>
+    const defaultUsers = [
+      {usuario: "usuario1", correo: "user1@example.com", password: "pass1"},
+      {usuario: "usuario2", correo: "user2@example.com", password: "pass2"},
+      {usuario: "usuario3", correo: "user3@example.com", password: "pass3"},
+    ];
+
+    // Cargar usuarios de localStorage
+    let usuarios =
+      JSON.parse(localStorage.getItem("usuarios")) || defaultUsers;
+    let registrados = JSON.parse(localStorage.getItem("registrados")) || [];
+
+    const loginTab = document.getElementById("loginTab");
+    const registerTab = document.getElementById("registerTab");
+    const loginForm = document.getElementById("loginForm");
+    const registerForm = document.getElementById("registerForm");
+    const backToLogin = document.getElementById("backToLogin");
+    const userList = document.getElementById("userList");
+    const registeredUsers = document.getElementById("registeredUsers");
+    const logoutButton = document.getElementById("logout");
+
+    function displayUserList() {
+      userList.classList.remove("hidden");
+      registeredUsers.innerHTML = "";
+
+      usuarios.forEach((u) => {
+        const li = document.createElement("li");
+        li.textContent = u.usuario;
+        registeredUsers.appendChild(li);
+      });
+
+      registrados.forEach((u) => {
+        const li = document.createElement("li");
+        li.textContent = u.usuario + " (Registrado recientemente)";
+        registeredUsers.appendChild(li);
+      });
+    }
+
+    // Mostrar lista de usuarios al cargar la página
+    displayUserList();
+
+    loginTab.addEventListener("click", () => {
+      registerForm.classList.add("hidden", "opacity-0");
+      loginForm.classList.remove("hidden", "opacity-0");
+      loginForm.classList.add("opacity-100");
+    });
+
+    registerTab.addEventListener("click", () => {
+      loginForm.classList.add("hidden", "opacity-0");
+      registerForm.classList.remove("hidden");
+      registerForm.classList.add("opacity-100");
+    });
+
+    backToLogin.addEventListener("click", (e) => {
+      e.preventDefault();
+      registerForm.classList.add("hidden", "opacity-0");
+      loginForm.classList.remove("hidden", "opacity-0");
+      loginForm.classList.add("opacity-100");
+    });
+
+    document.getElementById("login").addEventListener("submit", (e) => {
+      e.preventDefault();
+      const user = document.getElementById("user").value;
+      const pass = document.getElementById("pass").value;
+
+      const foundUser = usuarios.find(
+        (u) => u.usuario === user && u.password === pass,
+      );
+
+      if (foundUser) {
+        alert(`Bienvenido ${foundUser.usuario}`);
+        displayUserList();
+        logoutButton.classList.remove("hidden");
+      } else {
+        alert("Usuario o contraseña incorrectos");
+      }
+    });
+
+    document.getElementById("register").addEventListener("submit", (e) => {
+      e.preventDefault();
+      const regUser = document.getElementById("reg_user").value;
+      const correo = document.getElementById("correo").value;
+      const regPass = document.getElementById("reg_pass").value;
+
+      if (usuarios.some((u) => u.usuario === regUser)) {
+        alert("El usuario ya existe.");
+      } else {
+        const newUser = {
+          usuario: regUser,
+          correo: correo,
+          password: regPass,
+        };
+        usuarios.push(newUser);
+        registrados.push(newUser);
+        alert("Registro exitoso");
+
+        // Guardar en localStorage
+        localStorage.setItem("usuarios", JSON.stringify(usuarios));
+        localStorage.setItem("registrados", JSON.stringify(registrados));
+
+        // Actualizar la lista de usuarios registrados
+        displayUserList();
+
+        // Limpiar el formulario
+        document.getElementById("register").reset();
+      }
+    });
+
+    logoutButton.addEventListener("click", () => {
+      alert("Has salido de la sesión");
+      logoutButton.classList.add("hidden");
+      userList.classList.add("hidden");
+      loginForm.classList.remove("hidden");
+    });
+  </script>
+</body>
+
+</html>
